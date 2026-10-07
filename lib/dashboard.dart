@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'new_order.dart';
-
+import 'home.dart';
+import 'workers.dart';
 
 class Dashboard extends StatefulWidget{
 
@@ -31,24 +32,11 @@ class _DashboardState extends State<Dashboard>{
     super.initState();
     
     screens = [
+      const Home(),
        Order(saveDetails: detailsobject),
+      const WorkersScreen(adminGarmentsName: 'AL Selim Garments'),
     ];
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -77,13 +65,21 @@ class _DashboardState extends State<Dashboard>{
 
 
 
-      floatingActionButton: FloatingActionButton(
+      /*floatingActionButton: FloatingActionButton(
           onPressed: (){
-            //add new order section
+            //add new order sectio
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Order(saveDetails: SaveDetails(),
+              ),
+              ),
+            );
+
           },
 
 
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color(0xFF062675),
 
         elevation: 6,
 
@@ -99,6 +95,8 @@ class _DashboardState extends State<Dashboard>{
 
 
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+
+       */
       
       bottomNavigationBar: BottomNavigationBar(
         
@@ -119,9 +117,11 @@ class _DashboardState extends State<Dashboard>{
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home) , label: "Home"),
           
-          BottomNavigationBarItem(icon: Icon(Icons.task), label: "Orders"),
+         // BottomNavigationBarItem(icon: Icon(Icons.task), label: "Orders"),
 
-          BottomNavigationBarItem(icon: Icon(Icons.search) , label: "Search"),
+          BottomNavigationBarItem(icon: Icon(Icons.add_circle), label: "Add Details"),
+
+          BottomNavigationBarItem(icon: Icon(Icons.person) , label: "Workers"),
 
           BottomNavigationBarItem(icon: Icon(Icons.more_horiz) , label: "More"),
         ],

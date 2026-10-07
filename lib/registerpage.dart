@@ -11,7 +11,9 @@ class RegisterScreen extends StatefulWidget{
 class _RegisterScreenState extends State<RegisterScreen>{
 
   final _fullNameController = TextEditingController();
-  //final _workerIdController = TextEditingController();
+
+  final _garmentsNameController = TextEditingController();
+
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
@@ -26,6 +28,7 @@ class _RegisterScreenState extends State<RegisterScreen>{
   void dispose(){   //for clean the memory
 
     _fullNameController.dispose();
+    _garmentsNameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -55,6 +58,13 @@ class _RegisterScreenState extends State<RegisterScreen>{
               controller: _fullNameController,
               hint : 'Full Name',
               icon : Icons.person_outline,
+            ),
+
+            const SizedBox(height: 16),
+            _buildTextField(
+                controller: _garmentsNameController,
+                hint: 'Garments Name',
+                icon: Icons.factory_outlined,
             ),
 
             const SizedBox(height: 16),
@@ -176,7 +186,7 @@ class _RegisterScreenState extends State<RegisterScreen>{
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        child: const Text('Register' ,style : TextStyle(fontSize: 16, color: Colors.black)),
+        child: const Text('Register' ,style : TextStyle(fontSize: 16, color: Colors.white)),
       ),
     );
   }

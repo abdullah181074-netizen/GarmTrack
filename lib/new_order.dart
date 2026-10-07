@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 
 class SaveDetails{
@@ -44,6 +45,9 @@ class OrderScreenState extends State<Order>{
     super.initState();
 
     saveDetails = widget.saveDetails;
+
+
+    dateController.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
   }
 
 
@@ -70,6 +74,9 @@ class OrderScreenState extends State<Order>{
 
   final _descriptionController = TextEditingController();
 
+  final dateController = TextEditingController();
+
+
 
 
   File? _selectedImage;
@@ -91,6 +98,44 @@ class OrderScreenState extends State<Order>{
 
 
 
+  Future<void> selectDate(BuildContext context) async{
+    DateTime initialDate;
+
+    try{
+      initialDate = DateFormat('dd/MM/yyyy').parse(dateController.text);
+    }
+
+    catch(e){
+      initialDate = DateTime.now();
+    }
+
+
+
+
+    final DateTime? pickedDate = await showDatePicker(
+        context: context,
+
+        initialDate: initialDate,
+
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2100),
+    );
+
+
+    //when a date is picked then it updates the text field and returns automatically
+
+    if(pickedDate != null){
+      setState(() {
+        dateController.text = DateFormat('dd/MM/yyyy').format(pickedDate);
+      });
+    }
+
+
+  }
+
+
+
+
 
 
 
@@ -103,7 +148,7 @@ class OrderScreenState extends State<Order>{
 
       appBar: AppBar(
 
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.yellow,
 
         title: const Text('Add Product Details'),
 
@@ -186,6 +231,50 @@ class OrderScreenState extends State<Order>{
               buildTextField(
                   controller: _quantityController,
                   hint: 'Quantity (Dozen)'
+              ),
+
+
+
+              SizedBox(height: 16),
+
+              TextFormField(
+                controller: dateController,
+
+                readOnly: true,     //this text controller only read data
+
+                onTap: ()=> selectDate(context),
+
+                validator: (value){
+                  if(value == null || value.isEmpty){
+                    return 'Please select a Date for Product';
+                  }
+                  return null;
+                },
+
+
+
+                decoration: InputDecoration(
+
+                  hintText: 'Product Date',
+
+                  filled: true,
+                  fillColor: Colors.grey.shade100,
+
+                  border: OutlineInputBorder(
+
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+
+                  suffixIcon: IconButton(
+
+                      icon: const Icon(Icons.calendar_today_outlined, color: Colors.grey),
+                      onPressed: ()=> selectDate(context),
+                  ),
+
+
+                ),
+
               ),
 
 

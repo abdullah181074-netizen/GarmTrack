@@ -8,13 +8,13 @@ class Home extends StatefulWidget{
 
   @override
 
-  State<Home> createState() => _HomeScreenState();
+  State<Home> createState() => HomeScreenState();
 
 }
 
 
 
-class _HomeScreenState extends State<Home>{
+class HomeScreenState extends State<Home>{
 
 
 

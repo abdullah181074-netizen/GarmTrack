@@ -33,8 +33,8 @@ class _DashboardState extends State<Dashboard>{
     
     screens = [
       const Home(),
-       Order(saveDetails: detailsobject),
-      const WorkersScreen(adminGarmentsName: 'AL Selim Garments'),
+      Order(saveDetails: detailsobject),
+      WorkerScreen(adminGarmentsName: 'Al Selim Garments'),
     ];
   }
 

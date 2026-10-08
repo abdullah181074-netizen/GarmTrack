@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
@@ -30,6 +32,7 @@ class AssignedOrder{
   final String workerId;
   final String productName;
   final String quantity;
+  final String size;
   final String price;
   final double totalPrice;
   final String deadline;
@@ -40,6 +43,7 @@ class AssignedOrder{
     required this.workerId,
     required this.productName,
     required this.quantity,
+    required this.size,
     required this.price,
     required this.totalPrice,
     required this.deadline,
@@ -257,6 +261,8 @@ class AssignProductScreenState extends State<AssignProductScreen>{
 
   final _priceController = TextEditingController();
 
+  final _sizeController = TextEditingController();
+
   final _descriptionController = TextEditingController();
 
   final dateController = TextEditingController();
@@ -298,7 +304,7 @@ class AssignProductScreenState extends State<AssignProductScreen>{
           .trim()
           .isEmpty || _priceController.text
           .trim()
-          .isEmpty) {
+          .isEmpty || _sizeController.text.trim().isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Please Fill in Product Name , Quantity and price'),
@@ -324,6 +330,7 @@ class AssignProductScreenState extends State<AssignProductScreen>{
           workerId: widget.worker.id,
           productName: _productNameController.text.trim(),
           quantity: _quantityController.text.trim(),
+          size : _sizeController.text.trim(),
           price: _priceController.text.trim(),
           totalPrice: totalPrice,
           deadline: dateController.text,
@@ -338,6 +345,7 @@ class AssignProductScreenState extends State<AssignProductScreen>{
 
       _productNameController.clear();
       _quantityController.clear();
+      _sizeController.clear();
       _priceController.clear();
       _descriptionController.clear();
 
@@ -429,6 +437,7 @@ class AssignProductScreenState extends State<AssignProductScreen>{
               buildTextField(
                   controller: _productNameController,
                   hint: 'Product Name',
+                  maxLength : 20,
               ),
 
               const SizedBox(height: 16),
@@ -443,6 +452,14 @@ class AssignProductScreenState extends State<AssignProductScreen>{
                     FilteringTextInputFormatter.digitsOnly,
                   ],
 
+              ),
+
+
+              const SizedBox(height: 16),
+
+              buildTextField(
+                  controller: _sizeController,
+                  hint: 'Size',
               ),
 
 
@@ -541,33 +558,60 @@ class AssignProductScreenState extends State<AssignProductScreen>{
 
     List<TextInputFormatter>? inputFormatters,
 
-    //icon
+    int? maxLength,
   }){
 
-    return TextFormField(
-      controller: controller,
+    return ValueListenableBuilder<TextEditingValue>(
+        valueListenable: controller,
+        builder: (context , value , child){
 
-      validator: (value){
+          final int currentLength = value.text.length;
 
-        if(value == null || value.isEmpty){
-          return 'Please Enter $hint';
+          final bool isWarning = maxLength != null && currentLength >= maxLength - 5;
+
+          final bool isOverlimit = maxLength != null && currentLength > maxLength;
+
+
+          return Column(
+
+            crossAxisAlignment: CrossAxisAlignment.start,
+
+            children: [
+
+            TextFormField(
+            controller: controller,
+
+            validator: (value){
+
+              if(value == null || value.isEmpty){
+                return 'Please Enter $hint';
+              }
+
+              return null;
+            },
+
+            decoration: InputDecoration(
+              hintText: hint,
+
+              filled:  true,
+
+              fillColor: Colors.grey.shade100,
+
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+
+
+              //character counter
+              counterText: maxLength != null? '${controller.text.length}/$maxLength':null,
+
+            ),
+          ),
+
+            ],
+          );
         }
-
-        return null;
-      },
-
-      decoration: InputDecoration(
-        hintText: hint,
-
-        filled:  true,
-
-        fillColor: Colors.grey.shade100,
-
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
-        ),
-      ),
     );
 
   }
@@ -737,12 +781,25 @@ class WorkerOrdersScreenState extends State<WorkerOrdersScreen>{
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
                     children: [
+
+
                       Text(
                         order.productName,
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
+                        ),
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      Text(
+                        'Size: ${order.size}',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.normal,
+                          color: Colors.blue,
                         ),
                       ),
 
@@ -856,6 +913,7 @@ class WorkerOrdersScreenState extends State<WorkerOrdersScreen>{
                     const SizedBox(width: 12),
                     const Expanded(
                       child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
@@ -865,11 +923,6 @@ class WorkerOrdersScreenState extends State<WorkerOrdersScreen>{
                               fontWeight: FontWeight.w600,
                               fontSize: 15,
                             ),
-                          ),
-                          SizedBox(height: 2),
-                          Text(
-                            'Get the grand total of all assigned orders',
-                            style: TextStyle(color: Colors.white70, fontSize: 12),
                           ),
                         ],
                       ),

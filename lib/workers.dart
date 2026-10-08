@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/services.dart';
 
 
 class Worker{
@@ -30,6 +31,7 @@ class AssignedOrder{
   final String productName;
   final String quantity;
   final String price;
+  final double totalPrice;
   final String deadline;
   final String descripton;
 
@@ -39,6 +41,7 @@ class AssignedOrder{
     required this.productName,
     required this.quantity,
     required this.price,
+    required this.totalPrice,
     required this.deadline,
     required this.descripton,
 });
@@ -306,12 +309,23 @@ class AssignProductScreenState extends State<AssignProductScreen>{
       }
 
 
+
+      //convert quantity and price to numbers
+
+      final double quantity = double.parse(_quantityController.text.trim());
+
+      final double pricePerPis = double.parse(_priceController.text.trim());
+
+      final double totalPrice = pricePerPis*12*quantity;
+
+
       WorkerDatabase.addOrder(
         AssignedOrder(
           workerId: widget.worker.id,
           productName: _productNameController.text.trim(),
           quantity: _quantityController.text.trim(),
           price: _priceController.text.trim(),
+          totalPrice: totalPrice,
           deadline: dateController.text,
           descripton: _descriptionController.text
               .trim()
@@ -422,6 +436,13 @@ class AssignProductScreenState extends State<AssignProductScreen>{
               buildTextField(
                   controller: _quantityController,
                   hint: 'Quantity (Dozen)',
+
+                  keyboardType: TextInputType.number,
+
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+
               ),
 
 
@@ -430,6 +451,14 @@ class AssignProductScreenState extends State<AssignProductScreen>{
               buildTextField(
                   controller: _priceController,
                   hint: 'Price (per Pis)',
+
+
+                keyboardType: TextInputType.number,
+
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
+
               ),
 
               const SizedBox(height: 16),
@@ -508,6 +537,10 @@ class AssignProductScreenState extends State<AssignProductScreen>{
     required TextEditingController controller,
     required String hint,
 
+    TextInputType? keyboardType,
+
+    List<TextInputFormatter>? inputFormatters,
+
     //icon
   }){
 
@@ -570,6 +603,87 @@ class WorkerOrdersScreen extends StatefulWidget{
 class WorkerOrdersScreenState extends State<WorkerOrdersScreen>{
 
 
+  Future<void> calculateTotal(List<AssignedOrder> orders) async{
+
+    //pop up screen to select date range
+
+    final DateTimeRange? range = await showDateRangePicker(
+        context: context,
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2100),
+        helpText: 'Select Date Range',
+        saveText: 'Calculate',
+    );
+
+    if (range == null)
+      return;
+
+    final dateFormat = DateFormat('dd/MM/yyyy');
+
+    double total = 0;
+    int count = 0;
+
+    for(final order in orders){
+      final date = dateFormat.parse(order.deadline);
+
+      if(!date.isBefore(range.start) && !date.isAfter(range.end)){
+
+        total += order.totalPrice;
+        count++;
+      }
+    }
+
+
+    if(!mounted)
+      return;
+
+    showDialog(
+        context: context,
+        builder: (dialogContext)=> AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+
+          title: const Text('Total Calculation'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+
+            children: [
+              Text(
+                '${dateFormat.format(range.start)} -> ${dateFormat.format(range.end)}',
+                style: TextStyle(color: Colors.grey.shade600),
+              ),
+
+
+              const SizedBox(height: 16),
+
+              Text(
+                'Total: ৳${total.toStringAsFixed(0)}',
+                style: TextStyle(
+                  color: Colors.green.shade700,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+
+          ),
+
+          actions: [
+            TextButton(
+                onPressed: ()=> Navigator.pop(dialogContext),
+                child: const Text('Close'),
+            ),
+          ],
+
+        ),
+    );
+
+  }
+
+
+
 
 
   @override
@@ -585,8 +699,8 @@ class WorkerOrdersScreenState extends State<WorkerOrdersScreen>{
 
         title: Text('${widget.worker.name}\'s Orders'),
 
-        backgroundColor: Colors.grey,
-        foregroundColor: Colors.white,
+        backgroundColor: Colors.blue.shade50,
+        foregroundColor: Colors.blue.shade700,
         elevation: 0,
         centerTitle: true,
       ),
@@ -633,23 +747,50 @@ class WorkerOrdersScreenState extends State<WorkerOrdersScreen>{
                       ),
 
 
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.blue.shade50,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
 
-                        child: Text(
-                          '${order.quantity} Dozen',
-                          style: TextStyle(
-                            color: Colors.blue.shade700,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 12,
+                      Row(
+
+                        children: [
+
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.blue.shade50,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+
+                            child: Text(
+                              '${order.quantity} Dozen',
+                              style: TextStyle(
+                                color: Colors.blue.shade700,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 12,
+                              ),
+                            ),
+
                           ),
-                        ),
-                      ),
 
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.green.shade50,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+
+                            child: Text(
+                              'Total: ৳${order.totalPrice.toStringAsFixed(0)}',
+                              style: TextStyle(
+                                color: Colors.green.shade700,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+
+                          ),
+
+                        ],
+                      ),
                     ],
                   ),
 
@@ -692,6 +833,56 @@ class WorkerOrdersScreenState extends State<WorkerOrdersScreen>{
             );
           },
       ),
+
+
+      bottomNavigationBar: workerOrder.isEmpty
+          ? null
+          : SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+          child: Material(
+            color: Colors.blue.shade600,
+            borderRadius: BorderRadius.circular(16),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(16),
+              onTap: () => calculateTotal(workerOrder),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                child: Row(
+                  children: [
+                    const Icon(Icons.calculate_outlined, color: Colors.white, size: 32),
+                    const SizedBox(width: 12),
+                    Container(width: 1, height: 36, color: Colors.white38),
+                    const SizedBox(width: 12),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Calculate Total for All Orders',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 15,
+                            ),
+                          ),
+                          SizedBox(height: 2),
+                          Text(
+                            'Get the grand total of all assigned orders',
+                            style: TextStyle(color: Colors.white70, fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(Icons.arrow_forward, color: Colors.white),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+
 
     );
   }

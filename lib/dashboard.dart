@@ -38,6 +38,75 @@ class _DashboardState extends State<Dashboard>{
     ];
   }
 
+  Widget _navItem(IconData icon, String label, int index) {
+    final bool isSelected = selectedIndex == index;
+
+    return Expanded(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Circular icon with temporary ripple effect
+          Material(
+            color: isSelected
+                ? const Color(0xFFDDF5E8)
+                : const Color(0xFFF0FAF5),
+            shape: const CircleBorder(),
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(
+              customBorder: const CircleBorder(),
+              splashColor: const Color(0xFF15966A).withOpacity(0.25),
+              highlightColor: const Color(0xFF15966A).withOpacity(0.12),
+
+              onTap: () {
+                if (index < screens.length) {
+                  setState(() {
+                    selectedIndex = index;
+                  });
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        '$label screen is not implemented yet.',
+                      ),
+                    ),
+                  );
+                }
+              },
+
+              child: SizedBox(
+                width: 48,
+                height: 48,
+                child: Icon(
+                  icon,
+                  size: 24,
+                  color: isSelected
+                      ? const Color(0xFF15966A)
+                      : const Color(0xFF43A982),
+                ),
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 5),
+
+          // Label stays unchanged
+          Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 11,
+              color: isSelected
+                  ? const Color(0xFF15966A)
+                  : Colors.black87,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 
 
   @override
@@ -51,12 +120,34 @@ class _DashboardState extends State<Dashboard>{
 
         //leading baki..
 
-        backgroundColor: Colors.blue,
-        title: const Text('Al Selim Garments'),
+        backgroundColor: Colors.green.shade50,
         elevation: 0,
         centerTitle: true,
 
 
+        leading: selectedIndex != 0 ? IconButton(
+
+            icon: const Icon(Icons.arrow_back,
+              color: Colors.black),
+
+            onPressed: () {
+              setState(() {
+                selectedIndex = 0;
+              });
+            },
+        ) : null ,
+
+        title: Text(
+          selectedIndex == 0 ? 'Home Screen'
+              : selectedIndex == 1 ? 'Add Product Details'
+                  :selectedIndex == 2 ? 'Workers Details': 'Settings',
+
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
 
       ),
       
@@ -65,70 +156,59 @@ class _DashboardState extends State<Dashboard>{
 
 
 
-      /*floatingActionButton: FloatingActionButton(
-          onPressed: (){
-            //add new order sectio
-
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Order(saveDetails: SaveDetails(),
-              ),
-              ),
-            );
-
-          },
 
 
-        backgroundColor: const Color(0xFF062675),
-
-        elevation: 6,
-
-        shape: const CircleBorder(),
-
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-          size: 35,
-
+      bottomNavigationBar: selectedIndex == 0 ?Container(
+        height: 200,
+        padding: const EdgeInsets.symmetric(
+          horizontal: 8,
+          vertical: 8,
         ),
-      ),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          border: Border(
+            top: BorderSide(color: Colors.transparent),
+          ),
+        ),
 
 
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        child: Column(
 
-       */
-      
-      bottomNavigationBar: BottomNavigationBar(
-        
-        currentIndex: selectedIndex,
-        onTap: (index){
-          setState(() {
-            selectedIndex = index;
-          });
-        },
-        
-        selectedItemColor: const Color(0xFF062675),
-        unselectedItemColor: Colors.black,
-        
-        
-        type: BottomNavigationBarType.fixed,
-        
-        
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home) , label: "Home"),
-          
-         // BottomNavigationBarItem(icon: Icon(Icons.task), label: "Orders"),
+          children: [
 
-          BottomNavigationBarItem(icon: Icon(Icons.add_circle), label: "Add Details"),
+            Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _navItem(Icons.home, 'Home', 0),
+                    _navItem(Icons.add_circle, 'Add details', 1),
+                    _navItem(Icons.person, 'Workers', 2),
+                    _navItem(Icons.monetization_on, 'Cost Expences', 3),
+                  ],
+                ),
+            ),
 
-          BottomNavigationBarItem(icon: Icon(Icons.person) , label: "Workers"),
 
-          BottomNavigationBarItem(icon: Icon(Icons.more_horiz) , label: "More"),
-        ],
-        
+            const SizedBox(height: 5),
+
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _navItem(Icons.inventory_2, 'Inventory', 4),
+                  _navItem(Icons.factory,'Production', 5),
+                  _navItem(Icons.person_add_alt_1, 'Add Customer', 6),
+                  _navItem(Icons.settings, 'Settings', 7),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 30),
+
+          ],
+        ),
       )
-      
-      
+        : null,
     );
   }
 }

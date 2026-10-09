@@ -146,17 +146,6 @@ class OrderScreenState extends State<Order>{
 
       backgroundColor: Colors.white70,
 
-      appBar: AppBar(
-
-        backgroundColor: Colors.yellow,
-
-        title: const Text('Add Product Details'),
-
-        centerTitle: true,
-
-      ),
-
-
 
       body: SingleChildScrollView(
 

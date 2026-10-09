@@ -17,6 +17,25 @@ class Home extends StatefulWidget{
 class HomeScreenState extends State<Home>{
 
 
+  int inProductionCount = 1000;
+  int completeCount = 700;
+  int pendingCount = 300;
+
+
+
+  void updateProductionStates({int? production , int? completed , int? pending}){
+
+    setState(() {
+      if(production != null)
+        inProductionCount = production;
+
+      if(completed != null)
+        completeCount = completed;
+
+      if(pending != null)
+        pendingCount = pending;
+    });
+  }
 
 
 
@@ -41,36 +60,35 @@ class HomeScreenState extends State<Home>{
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
                 children: [
-                  const Text(
-                      "Welcome Back",
-                      style: TextStyle(
+                  Container(
 
-                        fontSize: 16,
-                        color: Colors.grey,
-                      ),
-
-                  ),
-
-
-                  const SizedBox(height: 5),
-
-                  Text(
-
-                    'name',
-
-                    style: const TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade50,
+                      borderRadius: BorderRadius.circular(10),
                     ),
+
+                    child: const Icon(
+                        Icons.store ,
+                        color: Colors.blueAccent,
+                        size: 24,
+                    ),
+
                   ),
 
-                  const SizedBox(height: 5),
+                  const SizedBox(width: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
 
-                  /*Text(
-
+                    children: [
+                      Row(
+                        children: const [],
+                      )
+                    ],
                   )
 
-                   */
+
+
 
                 ],
               )

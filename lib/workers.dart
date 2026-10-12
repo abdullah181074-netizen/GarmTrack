@@ -372,11 +372,11 @@ class AssignProductScreenState extends State<AssignProductScreen>{
 
         appBar: AppBar(
 
-          backgroundColor: Colors.transparent,
+          backgroundColor: Color(0xFF15966A),
           title:  Text(
               'Assign Product to : ${widget.worker.name}',
 
-               style: const TextStyle(color: Colors.black87 , fontSize: 18),
+               style: const TextStyle(color: Colors.white , fontSize: 18),
           ),
 
           centerTitle: true,
@@ -414,13 +414,13 @@ class AssignProductScreenState extends State<AssignProductScreen>{
 
                     child: Row(
                       children: const [
-                        Icon(Icons.task, size: 18, color: Colors.grey),
+                        Icon(Icons.task, size: 18, color: Color(0xFF15966A)),
 
                         SizedBox(width: 4),
 
                         Text(
                           'View All Orders',
-                          style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w600, fontSize: 14),
+                          style: TextStyle(color: Color(0xFF15966A), fontWeight: FontWeight.w600, fontSize: 14),
                         ),
                         Icon(Icons.chevron_right , size: 18, color: Colors.grey),
                       ],
@@ -530,7 +530,7 @@ class AssignProductScreenState extends State<AssignProductScreen>{
                 child: ElevatedButton(
                   onPressed: saveOrder,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
+                    backgroundColor: Color(0xFF15966A),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                   child: const Text('Add', style: TextStyle(color: Colors.white, fontSize: 16)),

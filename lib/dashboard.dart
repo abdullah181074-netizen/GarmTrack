@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'new_order.dart';
 import 'home.dart';
 import 'workers.dart';
+import 'inventory.dart';
 
 class Dashboard extends StatefulWidget{
 
@@ -35,6 +36,8 @@ class _DashboardState extends State<Dashboard>{
       const Home(),
       Order(saveDetails: detailsobject),
       WorkerScreen(adminGarmentsName: 'Al Selim Garments'),
+      const InventoryScreen(),
+
     ];
   }
 
@@ -59,7 +62,7 @@ class _DashboardState extends State<Dashboard>{
               highlightColor: const Color(0xFF15966A).withOpacity(0.12),
 
               onTap: () {
-                if (index < screens.length) {
+                if (index <= screens.length) {
                   setState(() {
                     selectedIndex = index;
                   });
@@ -120,7 +123,7 @@ class _DashboardState extends State<Dashboard>{
 
         //leading baki..
 
-        backgroundColor: Colors.green.shade50,
+        backgroundColor: Color(0xFF15966A),
         elevation: 0,
         centerTitle: true,
 
@@ -128,7 +131,7 @@ class _DashboardState extends State<Dashboard>{
         leading: selectedIndex != 0 ? IconButton(
 
             icon: const Icon(Icons.arrow_back,
-              color: Colors.black),
+              color: Colors.white),
 
             onPressed: () {
               setState(() {
@@ -140,10 +143,11 @@ class _DashboardState extends State<Dashboard>{
         title: Text(
           selectedIndex == 0 ? 'Home Screen'
               : selectedIndex == 1 ? 'Add Product Details'
-                  :selectedIndex == 2 ? 'Workers Details': 'Settings',
+                  :selectedIndex == 2 ? 'Workers Details' : 'Inventory' ,
+
 
           style: TextStyle(
-            color: Colors.black,
+            color: Colors.white,
             fontSize: 25,
             fontWeight: FontWeight.bold,
           ),
@@ -183,7 +187,7 @@ class _DashboardState extends State<Dashboard>{
                     _navItem(Icons.home, 'Home', 0),
                     _navItem(Icons.add_circle, 'Add details', 1),
                     _navItem(Icons.person, 'Workers', 2),
-                    _navItem(Icons.monetization_on, 'Cost Expences', 3),
+                    _navItem(Icons.inventory_2, 'Inventory', 3),
                   ],
                 ),
             ),
@@ -195,7 +199,7 @@ class _DashboardState extends State<Dashboard>{
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _navItem(Icons.inventory_2, 'Inventory', 4),
+                  _navItem(Icons.monetization_on, 'Cost', 4),
                   _navItem(Icons.factory,'Production', 5),
                   _navItem(Icons.person_add_alt_1, 'Add Customer', 6),
                   _navItem(Icons.settings, 'Settings', 7),

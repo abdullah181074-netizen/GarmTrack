@@ -4,8 +4,8 @@ import 'dart:async';
 
 
 class AppColors{
-  static const Color primary = Color(0xFF5B4FE5); //top part of the screen
-  static const Color primaryDark = Color(0xFF0B3659); //bottom part of screen
+  static const Color primary = Color(0xFF075035); //top part of the screen
+  static const Color primaryDark = Color(0xFF063524); //bottom part of screen
   static const white = Colors.white;
 }
 

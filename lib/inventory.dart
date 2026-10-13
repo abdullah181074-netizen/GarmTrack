@@ -216,19 +216,58 @@ class InventoryScreenState extends State<InventoryScreen>{
                     const SizedBox(height: 12),
 
 
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                      children: [
 
 
+                        //not add yet
 
+                      ],
+                    ),
                   ],
-                )
-              )
+                ),
+              ),
+
+
+
+
+              const Divider(height: 1, color: Colors.black12),
+
+              Expanded(
+                  child: FilteredItems.isEmpty
+                      ? Center(
+                    child: Text(
+                      "No items found for $selectedSedtion",
+                      style: TextStyle(color: Colors.grey.shade600),
+                    ),
+                  )
+                      : ListView.builder(
+
+
+                      padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 80),
+                      itemCount: FilteredItems.length,
+                      itemBuilder: (context , index){
+                        final item = FilteredItems[index];
+                        return buildInventoryCard(item , primaryColor);
+                      },
+                  ),
+              ),
             ],
-          )
-      )
+          ),
+      ),
 
     );
-
-
   }
+
+
+
+
+
+
+
+
+
 
 }

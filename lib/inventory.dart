@@ -66,6 +66,116 @@ class InventoryScreenState extends State<InventoryScreen>{
   }
 
 
-  void addNewProduct(String name, String size, String category , int store , int godown , int factory)
+  void addNewProduct(String name, String size, String category , int store , int godown , int factory){
+    setState(() {
+      InventoryList.add(
+        InventoryItem(
+            id: DateTime.now().millisecondsSinceEpoch.toString(),
+            name: name,
+            size: size.isEmpty ? 'N/A' :size,
+            category: category,
+            storeQty: store,
+            godownQty: godown,
+            factoryQtyy: factory,
+        ),
+      );
+    });
+  }
+
+
+  bool transferStock(InventoryItem item , String from , String to , int amount){
+
+    if(amount <= 0)
+      return false;
+
+    int sourceQty = 0;
+
+    if(from == 'Store')
+      sourceQty = item.storeQty;
+    if(from == 'Godown')
+      sourceQty = item.godownQty;
+    if(from == 'Factory')
+      sourceQty = item.factoryQtyy;
+
+
+    if(sourceQty < amount) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text('Insufficient stock in $from! Available: $sourceQty'),
+            backgroundColor: Colors.red,
+        ),
+      );
+      return false;
+    }
+
+
+    setState(() {
+
+      //deduct from source
+
+      if(from == 'Store')
+        item.storeQty -= amount;
+
+      if(from == 'Godown')
+        item.godownQty -= amount;
+
+      if(from == 'Factory')
+        item.factoryQtyy -= amount;
+
+
+      //add to destination
+
+      if(to == 'Store')
+        item.storeQty += amount;
+
+      if(to == 'Godown')
+        item.godownQty += amount;
+
+      if(to == 'Factory')
+        item.factoryQtyy += amount;
+
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+          content: Text('Transferred $amount Dozen of ${item.name} (${item.size}) to $to!'),
+          backgroundColor: const Color(0xFF15966A),
+      ),
+    );
+    return true;
+  }
+
+
+
+
+  @override
+  Widget build(BuildContext context){
+
+    const primaryColor = Color(0xFF15966A);
+
+    return Scaffold(
+
+      backgroundColor: Colors.grey.shade50,
+
+      floatingActionButton: FloatingActionButton.extended(
+          onPressed: ()=> showAddProductDialog(context),    //not add yet
+          backgroundColor: primaryColor,
+          elevation: 3,
+          icon: const Icon(Icons.add, color: Colors.white, size: 20),
+          label: const Text(
+            "Add Product",
+            style: TextStyle(color: Colors.white , fontWeight: FontWeight.bold, fontSize: 13),
+          ),
+      ),
+
+
+
+
+
+
+    );
+
+
+  }
 
 }

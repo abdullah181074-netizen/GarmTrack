@@ -169,9 +169,62 @@ class InventoryScreenState extends State<InventoryScreen>{
       ),
 
 
+      body: SafeArea(
+          child: Column(
+            children: [
+
+              //Search and section filter bar
+
+              Container(
+                color: Colors.white,
+                padding: const EdgeInsets.all(16.0),
+
+                child: Column(
+                  children: [
+                    TextField(
+                      onChanged: (val) => setState(()=> searchQuery = val),
+
+                      decoration: InputDecoration(
+                        hintText: "Search name or size...",
+                        hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 14),
+
+
+                        prefixIcon: Icon(Icons.search, color: Colors.grey.shade600),
+
+                        filled: true,
+                        fillColor: Colors.grey.shade100,
+
+                        contentPadding: const EdgeInsets.symmetric(vertical: 0),
+
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(
+                            color: primaryColor ,
+                            width: 1.5,
+                          ),
+                        ),
+                      ),
+                    ),
 
 
 
+                    const SizedBox(height: 12),
+
+
+
+
+
+                  ],
+                )
+              )
+            ],
+          )
+      )
 
     );
 

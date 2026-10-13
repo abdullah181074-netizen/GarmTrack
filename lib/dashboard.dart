@@ -131,7 +131,7 @@ class _DashboardState extends State<Dashboard>{
         leading: selectedIndex != 0 ? IconButton(
 
             icon: const Icon(Icons.arrow_back,
-              color: Colors.white),
+              color: Colors.black),
 
             onPressed: () {
               setState(() {

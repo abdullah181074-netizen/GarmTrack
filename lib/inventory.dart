@@ -487,12 +487,55 @@ class InventoryScreenState extends State<InventoryScreen>{
                   ),
                 ),
             ),
-
-          ]
+          ],
         ],
-      )
+      ),
 
-    )
+    );
   }
+
+
+
+  Widget buildStockBadge(String label , int qty , Color textColor , Color bgColor){
+
+    return Expanded(
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(8),
+          ),
+
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 11,
+                  color: textColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              Text(
+                "$qty",
+                style: TextStyle(
+                  fontSize: 12,
+                  color: textColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+    );
+  }
+
+
+
+
+
 
 }

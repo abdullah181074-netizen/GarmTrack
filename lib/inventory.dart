@@ -221,8 +221,10 @@ class InventoryScreenState extends State<InventoryScreen>{
 
                       children: [
 
-
-                        //not add yet
+                        buildTabButton("All", primaryColor),
+                        buildTabButton("Store", primaryColor),
+                        buildTabButton("Godown", primaryColor),
+                        buildTabButton("Factory", primaryColor),
 
                       ],
                     ),
@@ -262,12 +264,201 @@ class InventoryScreenState extends State<InventoryScreen>{
   }
 
 
+  Widget buildTabButton(String label , Color primaryColor){
+
+    final isSelected = selectedSedtion == label;
+
+    return Expanded(
+        child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 3.0),
+
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: isSelected ? primaryColor : Colors.grey.shade100,
+                foregroundColor: isSelected ? Colors.white : Colors.black87,
+                elevation: 0,
+
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 10),
+              ),
+
+              onPressed: ()=> setState(()=> selectedSedtion = label),
+
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                ),
+              ),
+            ),
+        ),
+    );
+  }
+
+
+  Widget buildInventoryCard(InventoryItem item , Color primaryColor){
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(14),
+
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: Colors.grey.shade200),
+
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+            children: [
+
+              Row(
+
+                children: [
+                  Text(
+                    item.name,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                      color: Colors.black87,
+                    ),
+                  ),
+
+                  const SizedBox(width: 8),
+
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+
+                    child: Text(
+                      "Size: ${item.size}",
+                      style: const TextStyle(
+                        color: Colors.black87,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
 
 
 
+              //total badge shown on 'all' tab
+
+              if(selectedSedtion == 'All')
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10 , vertical: 4 ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFDDF5E8),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    "Total: ${item.totalQty}",
+                    style: TextStyle(
+                      color: primaryColor,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+
+          const SizedBox(height: 12),
 
 
+          if(selectedSedtion == 'All') ...[
+            Row(
+              children: [
+                buildStockBadge("Store" , item.storeQty , primaryColor, const Color(0xFFDDF5E8)),
 
+                const SizedBox(width: 8)
 
+                buildStockBadge("Godown" , item.godownQty , primaryColor, const Color(0xFFDDF5E8)),
+
+                const SizedBox(width: 8),
+
+                buildStockBadge("Factory" , item.godownQty , primaryColor, const Color(0xFFDDF5E8)),
+              ],
+            ),
+
+            const SizedBox(height: 10),
+
+            InkWell(
+              onTap: ()=> showTransferBottomSheet(context, item, primaryColor, initialFrom : 'Factory'),
+
+              child: Row(
+
+                children: const [
+                  Text(
+                    "Tap to move Stock between locations",
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: Colors.grey,
+                    ),
+                  ),
+
+                  SizedBox(width: 4),
+
+                  Icon(Icons.swap_horiz,size: 14, color: Colors.grey),
+                ],
+              ),
+            ),
+          ] else...[
+            Row(
+              children: [
+
+                Icon(
+                  selectedSedtion == 'Store' ? Icons.store
+                      : selectedSedtion == 'Godown' ? Icons.warehouse : Icons.factory,
+                  color: primaryColor,
+                  size: 18,
+                ),
+
+                const SizedBox(width: 6),
+                Text(
+                  "In $selectedSedtion: ",
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+
+                Text(
+                  "${selectedSedtion == 'Store' ? item.storeQty: selectedSedtion == 'Godown' ? item.godownQty : item.factoryQtyy} pcs",
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  )
+                )
+
+              ],
+            )
+          ]
+        ],
+      )
+
+    )
+  }
 
 }

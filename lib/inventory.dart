@@ -449,11 +449,45 @@ class InventoryScreenState extends State<InventoryScreen>{
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
-                  )
-                )
+                  ),
+                ),
 
               ],
-            )
+            ),
+
+
+
+            //Move stock button
+
+            OutlinedButton.icon(
+
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: primaryColor,
+                  side: BorderSide(color: primaryColor.withOpacity(0.4)),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                ),
+                onPressed: ()=> showTransferBottomSheet(
+                  context,
+                  item,
+                  primaryColor,
+                  initialFrom: selectedSedtion,
+                ),
+
+                icon: const Icon(Icons.swap_horiz, size: 14),
+                label: const Text(
+                  "Move Stock",
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+            ),
+
           ]
         ],
       )

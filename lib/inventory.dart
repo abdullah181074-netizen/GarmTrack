@@ -68,12 +68,12 @@ class InventoryScreenState extends State<InventoryScreen>{
 
   void addNewProduct(String name, String size, String category , int store , int godown , int factory){
     setState(() {
-      InventoryList.add(
+      inventoryList.add(
         InventoryItem(
             id: DateTime.now().millisecondsSinceEpoch.toString(),
             name: name,
             size: size.isEmpty ? 'N/A' :size,
-            category: category,
+
             storeQty: store,
             godownQty: godown,
             factoryQtyy: factory,
@@ -394,7 +394,7 @@ class InventoryScreenState extends State<InventoryScreen>{
               children: [
                 buildStockBadge("Store" , item.storeQty , primaryColor, const Color(0xFFDDF5E8)),
 
-                const SizedBox(width: 8)
+                const SizedBox(width: 8),
 
                 buildStockBadge("Godown" , item.godownQty , primaryColor, const Color(0xFFDDF5E8)),
 
@@ -673,7 +673,7 @@ class InventoryScreenState extends State<InventoryScreen>{
 
                             final amount = int.tryParse(amountController.text) ?? 0;
 
-                            if(transferStock(item, from, to, amount)){
+                            if(transferStock(item, fromLocation, toLocation, amount)){
                               Navigator.pop(ctx);
                             }
                             } ,
@@ -692,19 +692,96 @@ class InventoryScreenState extends State<InventoryScreen>{
     );
   }
 
+  //add new Product Dialog
+
+  void showAddProductDialog(BuildContext context) {
+    final nameController = TextEditingController();
+    final sizeController = TextEditingController();
+
+    final storeController = TextEditingController(text: "0");
+    final godownController = TextEditingController(text: "0");
+    final factoryController = TextEditingController(text: "0");
 
 
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: const Text("Add New Product"),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+
+              children: [
+                TextField(
+                  controller: nameController,
+                  decoration: const InputDecoration(labelText: "Product Name"),
+                ),
+
+                TextField(
+                  controller: sizeController,
+                  decoration: const InputDecoration(labelText: "Size"),
+                ),
 
 
+                TextField(
+                  controller: storeController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                      labelText: "Store Initial Stock"),
+                ),
+
+                TextField(
+                  controller: godownController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                      labelText: "Store Initial Stock"),
+                ),
 
 
+                TextField(
+                  controller: factoryController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                      labelText: "Store Initial Stock"),
+                ),
 
 
+              ],
+            ),
+          ),
 
 
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text("Cancel"),
+            ),
 
 
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF15966A),
+              ),
+              onPressed: () {
+                if (nameController.text.isNotEmpty) {
+                  addNewProduct(
+                    nameController.text,
+                    sizeController.text,
 
+                    int.tryParse(storeController.text) ?? 0,
+                    int.tryParse(godownController.text) ?? 0,
+                    int.tryParse(factoryController.text) ?? 0,
+                  );
+                  Navigator.pop(ctx);
+                }
+              },
 
-
+              child: const Text("Save", style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

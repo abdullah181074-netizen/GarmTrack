@@ -536,6 +536,175 @@ class InventoryScreenState extends State<InventoryScreen>{
 
 
 
+  void showTransferBottomSheet(
+      BuildContext context,
+      InventoryItem item,
+      Color primaryColor,{
+        required String initialFrom,
+  }){
+
+    String fromLocation = initialFrom;
+    String toLocation = initialFrom == 'Store' ? 'Godown' : 'Store';
+
+    final TextEditingController amountController = TextEditingController();
+
+
+    showModalBottomSheet(
+        context: context,
+
+        isScrollControlled: true,
+        backgroundColor: Colors.white,
+
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        builder: (ctx){
+          return StatefulBuilder(
+              builder: (ctx, setModalState){
+                return Padding(
+                    padding: EdgeInsets.only(
+                      top: 20,
+                      left: 20,
+                      right: 20,
+                      bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
+                    ),
+
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                        children: [
+                          Text(
+                            "Transfer Stock: ${item.name}",
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8 , vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade200,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+
+                            child: Text(
+                              "Size: ${item.size}",
+                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      Row(
+                        children: [
+                          Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+
+                                children: [
+                                  const Text(
+                                      "From Location ",
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+
+                                  DropdownButton<String>(
+
+                                      value: fromLocation,
+                                      isExpanded: true,
+                                      items: ['Store' , 'Godown' , 'Factory'].map((loc){
+                                        return DropdownMenuItem(
+                                          value: loc,
+                                          child: Text(loc)
+                                        );
+                                      }).toList(),
+
+                                      onChanged: (val){
+                                        if(val != null) setModalState(()=> toLocation = val);
+                                      },
+                                  ),
+                                ],
+                              ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 12),
+
+                      TextField(
+                        controller: amountController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: "Quantity to Transfer",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+
+
+                      const SizedBox(height: 20),
+
+                      SizedBox(
+                        width: double.infinity,
+                        height: 48,
+
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: primaryColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                            onPressed: (){
+                            if(fromLocation == toLocation){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Source and Destination cannot be Same!'),)
+                              );
+                              return;
+                            }
+
+                            final amount = int.tryParse(amountController.text) ?? 0;
+
+                            if(transferStock(item, from, to, amount)){
+                              Navigator.pop(ctx);
+                            }
+                            } ,
+                            child: const Text(
+                              "Confirm Transfer",
+                              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+          );
+        },
+    );
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }

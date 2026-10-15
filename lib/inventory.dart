@@ -73,6 +73,7 @@ class InventoryScreenState extends State<InventoryScreen>{
             id: DateTime.now().millisecondsSinceEpoch.toString(),
             name: name,
             size: size.isEmpty ? 'N/A' :size,
+            category: category,
 
             storeQty: store,
             godownQty: godown,
@@ -400,7 +401,7 @@ class InventoryScreenState extends State<InventoryScreen>{
 
                 const SizedBox(width: 8),
 
-                buildStockBadge("Factory" , item.godownQty , primaryColor, const Color(0xFFDDF5E8)),
+                buildStockBadge("Factory" , item.factoryQtyy , primaryColor, const Color(0xFFDDF5E8)),
               ],
             ),
 
@@ -428,64 +429,68 @@ class InventoryScreenState extends State<InventoryScreen>{
             ),
           ] else...[
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
               children: [
 
-                Icon(
-                  selectedSedtion == 'Store' ? Icons.store
-                      : selectedSedtion == 'Godown' ? Icons.warehouse : Icons.factory,
-                  color: primaryColor,
-                  size: 18,
+                Row(
+                  children: [
+                    Icon(
+                      selectedSedtion == 'Store' ? Icons.store
+                          : selectedSedtion == 'Godown' ? Icons.warehouse : Icons.factory,
+                      color: primaryColor,
+                      size: 18,
+                    ),
+
+                    const SizedBox(width: 6),
+                    Text(
+                      "In $selectedSedtion: ",
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+
+                    Text(
+                      "${selectedSedtion == 'Store' ? item.storeQty: selectedSedtion == 'Godown' ? item.godownQty : item.factoryQtyy} pcs",
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ],
                 ),
 
-                const SizedBox(width: 6),
-                Text(
-                  "In $selectedSedtion: ",
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
-                ),
 
-                Text(
-                  "${selectedSedtion == 'Store' ? item.storeQty: selectedSedtion == 'Godown' ? item.godownQty : item.factoryQtyy} pcs",
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                //Move stock button
+
+                OutlinedButton.icon(
+
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: primaryColor,
+                    side: BorderSide(color: primaryColor.withOpacity(0.4)),
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
+                  onPressed: ()=> showTransferBottomSheet(
+                    context,
+                    item,
+                    primaryColor,
+                    initialFrom: selectedSedtion,
+                  ),
+
+                  icon: const Icon(Icons.swap_horiz, size: 14),
+                  label: const Text(
+                    "Move Stock",
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-
               ],
-            ),
-
-
-
-            //Move stock button
-
-            OutlinedButton.icon(
-
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: primaryColor,
-                  side: BorderSide(color: primaryColor.withOpacity(0.4)),
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  minimumSize: Size.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                ),
-                onPressed: ()=> showTransferBottomSheet(
-                  context,
-                  item,
-                  primaryColor,
-                  initialFrom: selectedSedtion,
-                ),
-
-                icon: const Icon(Icons.swap_horiz, size: 14),
-                label: const Text(
-                  "Move Stock",
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
             ),
           ],
         ],
@@ -633,6 +638,39 @@ class InventoryScreenState extends State<InventoryScreen>{
                                 ],
                               ),
                           ),
+
+                          const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                            child: Icon(Icons.arrow_forward_rounded, color: Colors.grey),
+                          ),
+
+                          Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+
+                                children: [
+                                  const Text(
+                                    "To Location",
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+
+                                  DropdownButton<String>(
+                                      value: toLocation,
+                                      isExpanded : true,
+                                      items: ['Store' , 'Godown' , 'Factory'].map((loc){
+                                        return DropdownMenuItem(value: loc ,child: Text(loc));
+                                      }).toList(),
+                                      onChanged: (val){
+                                        if(val != null)
+                                          setModalState (()=> toLocation = val);
+                                      },
+                                  ),
+                                ],
+                              ),
+                          ),
                         ],
                       ),
 
@@ -698,6 +736,8 @@ class InventoryScreenState extends State<InventoryScreen>{
     final nameController = TextEditingController();
     final sizeController = TextEditingController();
 
+    final categoryController = TextEditingController(text: "General");
+
     final storeController = TextEditingController(text: "0");
     final godownController = TextEditingController(text: "0");
     final factoryController = TextEditingController(text: "0");
@@ -725,6 +765,12 @@ class InventoryScreenState extends State<InventoryScreen>{
 
 
                 TextField(
+                  controller: categoryController,
+                  decoration: const InputDecoration(labelText: "Category"),
+                ),
+
+
+                TextField(
                   controller: storeController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
@@ -735,7 +781,7 @@ class InventoryScreenState extends State<InventoryScreen>{
                   controller: godownController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
-                      labelText: "Store Initial Stock"),
+                      labelText: "Godown Initial Stock"),
                 ),
 
 
@@ -743,7 +789,7 @@ class InventoryScreenState extends State<InventoryScreen>{
                   controller: factoryController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
-                      labelText: "Store Initial Stock"),
+                      labelText: "Factory Initial Stock"),
                 ),
 
 
@@ -768,6 +814,7 @@ class InventoryScreenState extends State<InventoryScreen>{
                   addNewProduct(
                     nameController.text,
                     sizeController.text,
+                    categoryController.text,
 
                     int.tryParse(storeController.text) ?? 0,
                     int.tryParse(godownController.text) ?? 0,

@@ -178,7 +178,7 @@ class ProductCostListScreenState extends State<PrductCostListScreen>{
                                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                                 decoration: BoxDecoration(
                                   color: const Color(0xFFDDF5E8),
-                                  borderRadius: BorderRadius.circular(8)k
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
 
                                 child: Text(
@@ -212,7 +212,7 @@ class ProductCostListScreenState extends State<PrductCostListScreen>{
 
 
 class AddProductCostScreen extends StatefulWidget{
-  cosnt AddProductCostScreen({super.key});
+  const AddProductCostScreen({super.key});
 
 
   @override
@@ -561,6 +561,126 @@ class AddProductCostScreenState extends State<AddProductCostScreen>{
                   ),
 
 
+                const SizedBox(height: 24),
+
+                Container(
+                  padding: const EdgeInsets.all(18),
+
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFDDF5E8),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: primaryColor.withOpacity(0.3)),
+                  ),
+
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                        children: [
+                          const Text(
+                            "Total Manufacturing Cost: ",
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+
+
+                          Text(
+                            "৳ ${totalCost.toStringAsFixed(2)}",
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
+                          ),
+                        ],
+                      ),
+
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 8.0),
+                        child: Divider(color: Colors.black87, height: 1),
+                      ),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                        children: [
+
+                          const Text(
+                            "Cost Per Pcs: ",
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: primaryColor),
+                          ),
+
+                          Text(
+                            "৳ ${costPerPis.toStringAsFixed(2)}",
+                            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: primaryColor),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+
+                const SizedBox(height: 20),
+
+
+                //save Button
+
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+
+                  child: ElevatedButton.icon(
+
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+
+                      onPressed: (){
+                        if(productNameController.text.trim().isEmpty){
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Please Enter a product Name !'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                          return;
+                        }
+
+
+                        final newSavedProduct = SavedProductCost(
+                            id: DateTime.now().millisecondsSinceEpoch.toString(),
+                            productName: productNameController.text.trim(),
+                            totalQuantity: int.tryParse(totalQuantityController.text) ??1 ,
+                            totalCost: totalCost,
+                            costPerPis: costPerPis,
+                            costBreakdown: List.from(costElements),
+                        );
+
+
+                        globalSavedProducts.add(newSavedProduct);
+                        Navigator.pop(context);
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text("Successfully saved cost for '${productNameController.text} !"),
+                              backgroundColor: primaryColor,
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.save, color: Colors.white),
+                      label: const Text(
+                        "Save",
+                        style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+                      ),
+                  ),
+                )
+
+
 
 
 
@@ -573,8 +693,6 @@ class AddProductCostScreenState extends State<AddProductCostScreen>{
 
     );
   }
-
-
 }
 
 

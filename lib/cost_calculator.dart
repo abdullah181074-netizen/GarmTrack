@@ -188,23 +188,212 @@ class ProductCostListScreenState extends State<PrductCostListScreen>{
                               ),
 
 
+                              onTap: (){
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => ProductDetailScreen(product: product),
+                                  ),
+                                );
+                              },
+                            ),
 
-
-                            )
-
-                          )
-                        }
-                    )
-            )
-
+                          );
+                        },
+                    ),
+            ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+
+
+
+class AddProductCostScreen extends StatefulWidget{
+  cosnt AddProductCostScreen({super.key});
+
+
+  @override
+  State<AddProductCostScreen> createState()=> AddProductCostScreenState();
+}
+
+
+class AddProductCostScreenState extends State<AddProductCostScreen>{
+  static const primaryColor = color(0xFF15966A);
+
+
+  //each new costing start with fresh text field
+  final TextEditingController productNameController = TextEditingController();
+  final TextEditingController totalQuantityController = TextEditingController();
+
+
+  //No previous cost show in the screen
+  List<CostElement> costElements = [];
+
+
+  double get totalCost{
+    double sum = 0.0;
+
+    for(var element in costElements){
+      sum += element.amount;
+    }
+    return sum;
+  }
+
+
+  double get costPerPis{
+    int totalQty = int.tryParse(totalQuantityController.text) ?? 0;
+
+    return totalQty > 0 ? (totalCost / totalQty) : 0.0;
+  }
+
+
+  void addCostElementDialog(){
+    final nameController = TextEditingController();
+    final amountController = TextEditingController();
+
+
+    showDialog(
+      context: context,
+      builder: (ctx){
+
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+
+          title: const Text("Add Cost Item", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+
+            children: [
+              TextField(
+                controller: productNameController,
+                textCapitalization: TextCapitalization.sentences,
+
+                decoration: InputDecoration(
+                  labelText: "Element Name",
+                  hintText: "e.g Febric , Button , Printing",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 12),
+
+              TextField(
+                controller: amountController,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                  labelText: "Total Cost (BDT)",
+                  prefixText: "৳",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          actions: [
+            TextButton(
+                onPressed: ()=> Navigator.pop(ctx),
+                child: const Text("Cancel" , style: TextStyle(color: Colors.grey)),
+            ),
+
+            ElevatedButton(
+
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                onPressed: (){
+                  if(nameController.text.isNotEmpty){
+                    final amount = double.tryParse(amountController.text) ?? 0.0;
+
+                    setState(() {
+                      costElements.add(CostElement(name: nameController.text.trim(), amount: amount));
+                    });
+
+                    Navigator.pop(ctx);
+                  }
+                },
+                child: const Text("Add" , style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+  void removeCostElement(int index){
+    setState(() {
+      costElements[index].controller.dispose();
+      costElements.removeAt(index);
+    });
+  }
+
+
+  @override
+  Widget build(BuildContext context){
+
+    return Scaffold(
+      backgroundColor: Colors.grey.shade50,
+
+      appBar: AppBar(
+        backgroundColor: primaryColor,
+        elevation: 0.5,
+        title: const Text(
+          "Cost Calculator",
+          style: TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        iconTheme: const IconThemeData(color: Colors.black87),
+      ),
+
+      body: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+
+              children: [
+
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: Colors.grey.shade200),
+                  ),
+
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+
+                    children: [
+                      const Text(
+                        "Product Information",
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black87),
+                      )
+                    ],
+                  )
+                )
+              ],
+            )
+          )
       )
-
-
 
     );
   }
+
+
 }
 
 

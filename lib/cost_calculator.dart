@@ -426,6 +426,53 @@ class AddProductCostScreenState extends State<AddProductCostScreen>{
 
 
 
+                const SizedBox(height: 20),
+
+                //cost Breakdown
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                  children: [
+
+                    const Text(
+                        "Cost BreakDown",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                    ),
+
+                    OutlinedButton.icon(
+
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: primaryColor,
+                          side: BorderSide(color: primaryColor.withOpacity(0.4)),
+
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadiusGeometry.circular(8),
+                          ),
+
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        ),
+
+                        onPressed: addCostElementDialog,
+                        icon: const Icon(Icons.add, size: 16),
+                        label: const Text("Add Cost Item" , style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                    ),
+                  ],
+                ),
+
+
+                const SizedBox(height: 10),
+
+
+                //Dynamic cost List
+
+
+
+
               ],
             )
           )

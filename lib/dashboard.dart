@@ -3,6 +3,7 @@ import 'new_order.dart';
 import 'home.dart';
 import 'workers.dart';
 import 'inventory.dart';
+import 'cost_calculator.dart';
 
 class Dashboard extends StatefulWidget{
 
@@ -37,6 +38,7 @@ class _DashboardState extends State<Dashboard>{
       Order(saveDetails: detailsobject),
       WorkerScreen(adminGarmentsName: 'Al Selim Garments'),
       const InventoryScreen(),
+      ProductCostListScreen(),
 
     ];
   }
@@ -143,7 +145,8 @@ class _DashboardState extends State<Dashboard>{
         title: Text(
           selectedIndex == 0 ? 'Home Screen'
               : selectedIndex == 1 ? 'Add Product Details'
-                  :selectedIndex == 2 ? 'Workers Details' : 'Inventory' ,
+                  :selectedIndex == 2 ? 'Workers Details'
+                      :selectedIndex == 3 ? 'Stock' : 'Product Costing List',
 
 
           style: TextStyle(

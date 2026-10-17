@@ -470,6 +470,99 @@ class AddProductCostScreenState extends State<AddProductCostScreen>{
 
                 //Dynamic cost List
 
+                if(costElements.isEmpty)
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(24),
+
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: Colors.grey.shade200),
+                  ),
+
+                  child: Center(
+                    child: Text("No cost items added yet. Tap '+ Add Cost Item' to start.",
+                    style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
+                    ),
+                  ),
+                )
+
+                else
+                  ListView.builder(
+
+                      shrinkWrap: true,
+
+                      physics: const NeverScrollableScrollPhysics(),
+
+                      itemCount: costElements.length,
+                      itemBuilder: (context, index){
+
+                        final item = costElements[index];
+
+                        return Container(
+                          key: ValueKey(item),
+
+                          margin: const EdgeInsets.only(bottom: 8),
+
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+
+                            borderRadius: BorderRadius.circular(12),
+
+                            border: Border.all(color: Colors.grey.shade200),
+                          ),
+
+                          child: Row(
+
+                            children: [
+                              Expanded(
+                                  flex: 3,
+                                  child: Text(
+                                    item.name,
+                                    style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+                                  ),
+                              ),
+
+                              Expanded(
+                                  flex: 2,
+                                  child: TextField(
+                                    controller: item.controller,
+                                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                    textAlign: TextAlign.right,
+
+                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+
+                                    decoration: const InputDecoration(
+                                      prefixText: "৳ ",
+                                      border: InputBorder.none,
+                                      isDense: true,
+                                    ),
+
+                                    onChanged: (val){
+                                      setState(() {
+                                        item.amount = double.tryParse(val) ?? 0.0;
+                                      });
+                                    },
+                                  ),
+                              ),
+
+                              IconButton(
+                                icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 20),
+                                onPressed: ()=> removeCostElement(index),
+                              ),
+
+                            ],
+                          ),
+                        );
+                      },
+                  ),
+
+
+
+
 
 
 

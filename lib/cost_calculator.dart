@@ -353,8 +353,9 @@ class AddProductCostScreenState extends State<AddProductCostScreen>{
         elevation: 0.5,
         title: const Text(
           "Cost Calculator",
-          style: TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
         ),
+        centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.black87),
       ),
 
@@ -381,10 +382,50 @@ class AddProductCostScreenState extends State<AddProductCostScreen>{
                       const Text(
                         "Product Information",
                         style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black87),
-                      )
+                      ),
+
+                      const SizedBox(height: 12),
+
+                      TextField(
+                        controller: productNameController,
+                        decoration: InputDecoration(
+                          labelText: "Product Name",
+                          filled: true,
+                          fillColor: Colors.grey.shade50,
+
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 12),
+
+                      TextField(
+                        controller: totalQuantityController,
+                        keyboardType: TextInputType.number,
+
+                        onChanged: (val) => setState(() {}),
+
+                        decoration: InputDecoration(
+                          labelText: "Total Quantity (Pcs)",
+
+                          filled: true,
+                          fillColor: Colors.grey.shade50,
+
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                      ),
                     ],
-                  )
-                )
+                  ),
+                ),
+
+
+
               ],
             )
           )

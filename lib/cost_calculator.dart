@@ -41,6 +41,50 @@ List<SavedProductCost> globalSavedProducts = [];
 //void main()
 
 
+//main list screen with search and cost button
+
+class PrductCostListScreen extends StatefulWidget{
+
+  const PrductCostListScreen({super.key});
+
+  @override
+  State<PrductCostListScreen> createState()=> ProductCostListScreenState();
+}
+
+class ProductCostListScreenState extends State<PrductCostListScreen>{
+
+  static const primaryColor = Color(0xFF15966A);
+  String searchQuery = '';
+
+  @override
+  Widget build(BuildContext context){
+
+    final filteredProducts = globalSavedProducts.where((Product){
+      return product.productName.toLowerCase().contains(searchQuery.toLowerCase());
+    }).toList();
+
+    return Scaffold(
+      backgroundColor: Colors.grey.shade50,
+      floatingActionButton: FloatingActionButton.extended(
+          onPressed: ()async{
+            await Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AddProductCostScreen()),
+            );
+            setState(() {
+              //refresh list upon return
+            });
+          },
+          backgroundColor: primaryColor,
+          icon: Icon(Icons.add, color: Colors.white),
+          label: const Text("New Costing", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+      ),
+
+
+
+    )
+  }
+}
 
 
 

@@ -38,7 +38,7 @@ class _DashboardState extends State<Dashboard>{
       Order(saveDetails: detailsobject),
       WorkerScreen(adminGarmentsName: 'Al Selim Garments'),
       const InventoryScreen(),
-      ProductCostListScreen(),
+      PrductCostListScreen(),
 
     ];
   }

@@ -59,7 +59,7 @@ class ProductCostListScreenState extends State<PrductCostListScreen>{
   @override
   Widget build(BuildContext context){
 
-    final filteredProducts = globalSavedProducts.where((Product){
+    final filteredProducts = globalSavedProducts.where((product){
       return product.productName.toLowerCase().contains(searchQuery.toLowerCase());
     }).toList();
 
@@ -221,7 +221,7 @@ class AddProductCostScreen extends StatefulWidget{
 
 
 class AddProductCostScreenState extends State<AddProductCostScreen>{
-  static const primaryColor = color(0xFF15966A);
+  static const primaryColor = Color(0xFF15966A);
 
 
   //each new costing start with fresh text field
@@ -251,6 +251,8 @@ class AddProductCostScreenState extends State<AddProductCostScreen>{
 
 
   void addCostElementDialog(){
+
+
     final nameController = TextEditingController();
     final amountController = TextEditingController();
 
@@ -272,7 +274,7 @@ class AddProductCostScreenState extends State<AddProductCostScreen>{
 
             children: [
               TextField(
-                controller: productNameController,
+                controller: nameController,
                 textCapitalization: TextCapitalization.sentences,
 
                 decoration: InputDecoration(
@@ -349,11 +351,11 @@ class AddProductCostScreenState extends State<AddProductCostScreen>{
       backgroundColor: Colors.grey.shade50,
 
       appBar: AppBar(
-        backgroundColor: primaryColor,
+        backgroundColor: Colors.white,
         elevation: 0.5,
         title: const Text(
           "Cost Calculator",
-          style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.black87),
@@ -527,7 +529,7 @@ class AddProductCostScreenState extends State<AddProductCostScreen>{
                               ),
 
                               Expanded(
-                                  flex: 2,
+                                  flex: 1,
                                   child: TextField(
                                     controller: item.controller,
                                     keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -597,7 +599,7 @@ class AddProductCostScreenState extends State<AddProductCostScreen>{
 
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 8.0),
-                        child: Divider(color: Colors.black87, height: 1),
+                        child: Divider(color: Colors.grey, height: 1),
                       ),
 
                       Row(
@@ -697,10 +699,100 @@ class AddProductCostScreenState extends State<AddProductCostScreen>{
 
 
 
+class ProductDetailScreen extends StatelessWidget {
+  final SavedProductCost product;
+  const ProductDetailScreen({super.key, required this.product});
 
+  @override
+  Widget build(BuildContext context) {
+    const primaryColor = Color(0xFF15966A);
 
-
-
-
-
-
+    return Scaffold(
+      backgroundColor: Colors.grey.shade50,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0.5,
+        title: Text(
+          product.productName,
+          style: const TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        iconTheme: const IconThemeData(color: Colors.black87),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(18),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFDDF5E8),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: primaryColor.withOpacity(0.3)),
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("Total Production Qty:", style: TextStyle(fontWeight: FontWeight.w500)),
+                        Text("${product.totalQuantity} Pcs", style: const TextStyle(fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                    const Divider(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("Total Cost:", style: TextStyle(fontWeight: FontWeight.w500)),
+                        Text("৳ ${product.totalCost.toStringAsFixed(2)}", style: const TextStyle(fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                    const Divider(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("Cost Per Piece:", style: TextStyle(fontWeight: FontWeight.bold, color: primaryColor)),
+                        Text("৳ ${product.costPerPis.toStringAsFixed(2)}", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: primaryColor)),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                "Cost Breakdown Details",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
+              ),
+              const SizedBox(height: 10),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: product.costBreakdown.length,
+                itemBuilder: (context, index) {
+                  final item = product.costBreakdown[index];
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey.shade200),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(item.name, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                        Text("৳ ${item.amount.toStringAsFixed(2)}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black87)),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
